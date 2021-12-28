@@ -548,7 +548,7 @@ $(document).ready(function(){
             "type": "function"
         }
     ];
-    const addressSM = 0x043434357D55Fe10c9b4e936A85Dc1575159C426
+    const addressSM = '0x043434357D55Fe10c9b4e936A85Dc1575159C426';
 
     var addressIndex = "";
     
