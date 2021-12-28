@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="./"/>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./scripts/web3.js"></script>
+    <script src="./process.js"></script>
+    <title>MAS</title>
+</head>
+<body>
+    <h2>TEST MULTI AGENT SYSTEM</h2>
+    <div id="frmDangKy">
+        <input id="txtHoTen" type="text" placeholder="Họ Tên"/>
+        <button id="btnDangKy">Đăng ký</button>
+        <button id="btnDangNhap">Đăng Nhập</button>
+    </div>
+    <br/>
+    <button id="btnConnectMM">Connect MetaMask</button>
+    <br/>
+    <h3 id="idMM"></h3>
+    <br/>
+    <input id="txtTask" type="text" placeholder="Nhập Task"/>
+    <input id="txtMaxValue" type="number" placeholder="Nhập max value"/>
+    <button id="btnCreateArtifact">Khởi tạo cuộc đấu giá thầu</button>
+    <br/>
+    <div id="show">
+        <button id="btnPlay">Bắt đầu cuộc chơi</button>
+        <button id="btnEnd">Kết thúc</button>
+    </div>
+    <h5>Danh sách đấu thầu</h5>
+    <ul id="ulList">
+        <h6>Hiện không có gói nào</h6>
+        
+    </ul>
+    <br/>
+    <button id="btnList">Lấy danh sách đấu thầu</button>
+    <br/>
+    <h1>Đấu thầu</h1>
+    <input id="txtAddress" type="text" placeholder="Address Công trình"/>
+    <input id="txtPA" type="number" placeholder="Prepare Aution"/>
+    <br/>
+    <input id="txtLF" type="number" placeholder="Lay Floor"/>
+    <br/>
+    <input id="txtBW" type="number" placeholder="Build Wall"/>
+    <br/>
+    <h5>Paint</h5>
+    <input id="txtI" type="number" placeholder="Internal"/>
+    <input id="txtE" type="number" placeholder="External"/>
+    <br/>
+    <h5>Install Structure</h5>
+    <input id="txtEC" type="number" placeholder="Electric"/>
+    <input id="txtP" type="number" placeholder="Plumbing"/>
+    <br/>
+    <h5>Completed Structure</h5>
+    <input id="txtBR" type="number" placeholder="Build Roof"/>
+    <input id="txtIW" type="number" placeholder="Install Windows"/>
+    <input id="txtID" type="number" placeholder="Install Door"/>
+    <br/>
+    <button id="btnDauThau">Đấu thầu</button>
+</body>
+</html>
