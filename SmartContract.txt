@@ -1,0 +1,103 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >=0.7.0 <0.9.0;
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+
+contract BuildingAuction is ERC721{
+    using Strings for uint256;
+    constructor() ERC721("BuildingAuction","SON"){}
+    using Counters for Counters.Counter;    
+    Counters.Counter private _tokenIds;
+    
+    struct AuctionArtifact{
+        string task;
+        uint maxValue;
+        address currentWinner;
+        uint currentBid;
+    }
+    struct Bid{
+        uint prepareSite;
+        uint layFloor;
+        uint buildWall;
+        uint paint;
+        uint installStructure;
+        uint completedStructure;
+    }
+    struct Package{
+        AuctionArtifact artifact;
+        bool start;
+        Bid bid;
+        uint256 tokenId;
+        bool isValue;
+    }
+    // Variable
+    string public domain = "http://dappmas.herokuapp.com/token/";
+    mapping(address=>Package) package;
+    // Event
+    event eInit(address _owner,string _task,uint _maxValue,uint256 _tokenId);
+    event ePlay(address _owner,string _task,uint _maxValue);
+    event eWinner(address _owner,address _currentWinner,uint _currentBid,uint _prepareSite,uint _layFloor,uint _paint,uint _buildWall,uint _installStructure,uint _completedStructure,uint256 _tokenId);
+    // Function
+    function initAuctionArtifact(string memory _task,uint _maxValue) public {
+        if (package[msg.sender].isValue){
+            revert("Phien dau gia cua ban dang hoat dong");
+        }
+        package[msg.sender].artifact = AuctionArtifact(_task,_maxValue,msg.sender,_maxValue);
+        package[msg.sender].start = false;
+        package[msg.sender].isValue = true;
+        _tokenIds.increment();
+        package[msg.sender].tokenId = _tokenIds.current();
+        emit eInit(msg.sender,_task,_maxValue,package[msg.sender].tokenId);
+    }
+
+    function play() public {
+        if (!package[msg.sender].isValue){
+            revert("Ban chua co phien dau gia nao");
+        }
+        if (package[msg.sender].start){
+            revert("Buoi dau gia cua ban da duoc bat dau");
+        }
+        package[msg.sender].start = true;
+        emit ePlay(msg.sender,package[msg.sender].artifact.task,package[msg.sender].artifact.maxValue);
+    }
+
+    function end() public {
+        if (!package[msg.sender].isValue){
+            revert("Ban chua co phien dau gia nao");
+        }
+        if (!package[msg.sender].start){
+            revert("Buoi dau gia cua ban chua duoc bat dau");
+        }
+        _mint(package[msg.sender].artifact.currentWinner,package[msg.sender].tokenId);
+        emit eWinner(msg.sender,package[msg.sender].artifact.currentWinner,package[msg.sender].artifact.currentBid,package[msg.sender].bid.prepareSite,package[msg.sender].bid.layFloor,package[msg.sender].bid.paint,package[msg.sender].bid.buildWall,package[msg.sender].bid.installStructure,package[msg.sender].bid.completedStructure,package[msg.sender].tokenId);
+        delete package[msg.sender];
+    }
+
+    function auction(address _owner,uint _prepareSite,uint _layFloor,uint _paint,uint _buildWall,uint _installStructure,uint _completedStructure) public {
+        if (!package[_owner].isValue){
+            revert("Buoi dau gia nay khong ton tai");
+        }
+        if (!package[_owner].start){
+            revert("Buoi dau gai nay chua duoc khoi dong");
+        }
+        uint bid =_prepareSite+_layFloor+_paint+_buildWall+_installStructure+_completedStructure;
+        if (bid>package[_owner].artifact.maxValue){
+            revert("Gia tri cua ban cao hon MAX");
+        }
+         if (bid>package[_owner].artifact.currentBid){
+            revert("Gia tri cua ban cao hon gia tri dau gia cua nguoi khac");
+        }
+        package[_owner].artifact.currentWinner = msg.sender;
+        package[_owner].artifact.currentBid = bid;
+        package[_owner].bid = Bid(_prepareSite,_layFloor,_paint,_buildWall,_installStructure,_completedStructure);
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
+        require(_exists(tokenId),"TokenID khong ton tai");
+        if (bytes(domain).length>0){
+            return string(abi.encodePacked(domain,tokenId.toString()));
+        } else
+        return "";
+    }
+}
